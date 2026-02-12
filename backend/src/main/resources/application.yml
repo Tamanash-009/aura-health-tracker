@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: aura-health-backend
+  datasource:
+    url: jdbc:mysql://localhost:3306/aura_health?useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
+logging:
+  level:
+    root: INFO
+    com.aurahealth: DEBUG
+
+app:
+  jwtSecret: 357638792F423F4528482B4D6251655468576D5A7134743777217A25432A462D
+  jwtExpirationMs: 86400000
+
