@@ -16,7 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -40,15 +39,17 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
-        
-        org.springframework.security.core.userdetails.User userDetails = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();    
-        // Need to fetch email from DB as UserDetails doesn't have it in this simple impl, or cast custom UserDetails
+
+        org.springframework.security.core.userdetails.User userDetails = (org.springframework.security.core.userdetails.User) authentication
+                .getPrincipal();
+        // Need to fetch email from DB as UserDetails doesn't have it in this simple
+        // impl, or cast custom UserDetails
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow();
 
-        return ResponseEntity.ok(new JwtResponse(jwt, 
-                                                 user.getId(), 
-                                                 user.getUsername(), 
-                                                 user.getEmail()));
+        return ResponseEntity.ok(new JwtResponse(jwt,
+                user.getId(),
+                user.getUsername(),
+                user.getEmail()));
     }
 
     @PostMapping("/signup")

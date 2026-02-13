@@ -1,10 +1,7 @@
 package com.aurahealth.user.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import java.util.Objects;
 
-@Data
-@AllArgsConstructor
 public class JwtResponse {
     private String token;
     private String type = "Bearer";
@@ -17,5 +14,71 @@ public class JwtResponse {
         this.id = id;
         this.username = username;
         this.email = email;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        JwtResponse that = (JwtResponse) o;
+        return Objects.equals(token, that.token) && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(token, id);
+    }
+
+    @Override
+    public String toString() {
+        return "JwtResponse{" +
+                "token='" + token + '\'' +
+                ", type='" + type + '\'' +
+                ", id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }
