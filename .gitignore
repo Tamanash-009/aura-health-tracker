@@ -1,15 +1,35 @@
+# Maven
 target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-*.class
-.classpath
-.project
-.settings/
-.idea/
-*.iml
+*.jar
+*.war
+*.ear
 *.log
-.DS_Store
+
+# NodeJS
 node_modules/
 dist/
 build/
+coverage/
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment Variables
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

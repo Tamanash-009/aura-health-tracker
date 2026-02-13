@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../utils/api';
 import AddMetricForm from '../components/AddMetricForm';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 interface HealthMetric {
     id: number;
@@ -44,7 +45,14 @@ const Dashboard = () => {
     const sleep = getLatestMetric('SLEEP');
 
     if (loading) {
-        return <div className="text-center p-10">Loading dashboard...</div>;
+        return (
+            <div className="flex justify-center items-center h-full min-h-[400px]">
+                <div className="text-center">
+                    <LoadingSpinner />
+                    <p className="mt-4 text-gray-500">Syncing your health data...</p>
+                </div>
+            </div>
+        );
     }
 
     return (

@@ -1,30 +1,27 @@
-server:
-  port: 8080
-
 spring:
   application:
     name: aura-health-backend
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://live-seasnail-24.clerk.accounts.dev
+
   datasource:
     url: jdbc:h2:mem:aura_health;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     username: sa
-    password: 
+    password: password
     driver-class-name: org.h2.Driver
+
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
+    show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
-  flyway:
-    enabled: false
-    baseline-on-migrate: true
+        format_sql: true
 
-logging:
-  level:
-    root: INFO
-    com.aurahealth: DEBUG
-
-app:
-  jwtSecret: 357638792F423F4528482B4D6251655468576D5A7134743777217A25432A462D
-  jwtExpirationMs: 86400000
-
+server:
+  port: 8080

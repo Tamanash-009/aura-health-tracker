@@ -1,20 +1,30 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { SignedIn, SignedOut, RedirectToSignIn, SignIn, SignUp } from '@clerk/clerk-react'
 import Dashboard from './pages/Dashboard'
-import Login from './pages/Login'
-import Signup from './pages/Signup'
 import Layout from './components/Layout'
-
 import UserProfile from './pages/UserProfile'
+import AuthSync from './components/AuthSync'
 
 function App() {
     return (
         <Router>
+            <AuthSync />
             <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<Signup />} />
-                <Route path="/" element={<Layout />}>
+                <Route path="/login/*" element={<div className="flex justify-center items-center min-h-screen bg-gray-50"><SignIn routing="path" path="/login" /></div>} />
+                <Route path="/signup/*" element={<div className="flex justify-center items-center min-h-screen bg-gray-50"><SignUp routing="path" path="/signup" /></div>} />
+
+                <Route path="/" element={
+                    <>
+                        <SignedIn>
+                            <Layout />
+                        </SignedIn>
+                        <SignedOut>
+                            <RedirectToSignIn />
+                        </SignedOut>
+                    </>
+                }>
                     <Route index element={<Dashboard />} />
-                    <Route path="workouts" element={<Dashboard />} /> {/* Reusing Dashboard for now as it has history */}
+                    <Route path="workouts" element={<Dashboard />} />
                     <Route path="profile" element={<UserProfile />} />
                 </Route>
             </Routes>

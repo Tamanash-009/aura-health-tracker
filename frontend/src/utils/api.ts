@@ -1,5 +1,11 @@
 import axios from 'axios';
 
+let authToken: string | null = null;
+
+export const setAuthToken = (token: string | null) => {
+    authToken = token;
+};
+
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080/api',
     headers: {
@@ -10,9 +16,8 @@ const api = axios.create({
 // Add a request interceptor to include the JWT token if available
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+        if (authToken) {
+            config.headers.Authorization = `Bearer ${authToken}`;
         }
         return config;
     },

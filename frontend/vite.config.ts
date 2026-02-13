@@ -10,9 +10,9 @@ export default defineConfig({
             registerType: 'autoUpdate',
             includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'pwa-icon.svg'],
             manifest: {
-                name: 'AuraHealth Tracker',
-                short_name: 'AuraHealth',
-                description: 'Track your health metrics and workouts',
+                name: 'Vitalis Health Tracker',
+                short_name: 'Vitalis',
+                description: 'Track your health metrics and vitality',
                 theme_color: '#3b82f6',
                 icons: [
                     {

@@ -1,18 +1,9 @@
-import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { Outlet, Link, useLocation } from 'react-router-dom';
+import { useClerk } from '@clerk/clerk-react';
 
 const Layout = () => {
     const location = useLocation();
-    const navigate = useNavigate();
-    const token = localStorage.getItem('token');
-
-    useEffect(() => {
-        if (!token) {
-            navigate('/login');
-        }
-    }, [token, navigate]);
-
-    if (!token) return null;
+    const { signOut } = useClerk();
 
     const isActive = (path: string) => {
         return location.pathname === path ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:bg-gray-50';
@@ -23,7 +14,7 @@ const Layout = () => {
             {/* Sidebar */}
             <aside className="w-64 bg-white border-r border-gray-200 hidden md:block">
                 <div className="p-6">
-                    <h1 className="text-2xl font-bold text-indigo-600">AuraHealth</h1>
+                    <h1 className="text-2xl font-bold text-indigo-600">Vitalis</h1>
                 </div>
                 <nav className="mt-6 px-4 space-y-2">
                     <Link to="/" className={`block py-2 px-4 rounded-md ${isActive('/')}`}>Dashboard</Link>
@@ -32,10 +23,7 @@ const Layout = () => {
                 </nav>
                 <div className="absolute bottom-0 w-64 p-4 border-t border-gray-200">
                     <button
-                        onClick={() => {
-                            localStorage.removeItem('token');
-                            navigate('/login');
-                        }}
+                        onClick={() => signOut()}
                         className="w-full py-2 px-4 text-left text-red-600 hover:bg-red-50 rounded-md flex items-center"
                     >
                         <span>Sign Out</span>
@@ -49,7 +37,7 @@ const Layout = () => {
                     <h2 className="text-xl font-semibold text-gray-800">
                         {location.pathname === '/' ? 'Dashboard' :
                             location.pathname === '/workouts' ? 'Workout Log' :
-                                location.pathname === '/profile' ? 'My Profile' : 'AuraHealth'}
+                                location.pathname === '/profile' ? 'My Profile' : 'Vitalis'}
                     </h2>
                     <div className="flex items-center space-x-4">
                         <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold">

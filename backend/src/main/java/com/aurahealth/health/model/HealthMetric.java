@@ -15,7 +15,7 @@ public class HealthMetric {
 
     @NotNull
     @Column(name = "user_id", nullable = false)
-    private Long userId;
+    private String userId;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -37,22 +37,6 @@ public class HealthMetric {
     @Column(name = "source")
     private String source = "MANUAL";
 
-    @AssertTrue(message = "Heart rate must be between 30 and 220 BPM")
-    private boolean isHeartRateValid() {
-        if (type == MetricType.HEART_RATE) {
-            return value >= 30 && value <= 220;
-        }
-        return true;
-    }
-
-    @AssertTrue(message = "Daily steps cannot exceed 100,000 realistically")
-    private boolean isStepsValid() {
-        if (type == MetricType.STEPS) {
-            return value >= 0 && value <= 100000;
-        }
-        return true;
-    }
-
     public enum MetricType {
         HEART_RATE, STEPS, SLEEP, WEIGHT
     }
@@ -60,7 +44,7 @@ public class HealthMetric {
     public HealthMetric() {
     }
 
-    public HealthMetric(Long id, Long userId, MetricType type, Double value, String unit, LocalDateTime measuredAt,
+    public HealthMetric(Long id, String userId, MetricType type, Double value, String unit, LocalDateTime measuredAt,
             String source) {
         this.id = id;
         this.userId = userId;
@@ -79,11 +63,11 @@ public class HealthMetric {
         this.id = id;
     }
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
@@ -133,7 +117,7 @@ public class HealthMetric {
 
     public static class HealthMetricBuilder {
         private Long id;
-        private Long userId;
+        private String userId;
         private MetricType type;
         private Double value;
         private String unit;
@@ -148,7 +132,7 @@ public class HealthMetric {
             return this;
         }
 
-        public HealthMetricBuilder userId(Long userId) {
+        public HealthMetricBuilder userId(String userId) {
             this.userId = userId;
             return this;
         }
@@ -190,24 +174,11 @@ public class HealthMetric {
         if (o == null || getClass() != o.getClass())
             return false;
         HealthMetric that = (HealthMetric) o;
-        return Objects.equals(id, that.id) && Objects.equals(userId, that.userId) && type == that.type
-                && Objects.equals(measuredAt, that.measuredAt);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, userId, type, measuredAt);
-    }
-
-    @Override
-    public String toString() {
-        return "HealthMetric{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", type=" + type +
-                ", value=" + value +
-                ", unit='" + unit + '\'' +
-                ", measuredAt=" + measuredAt +
-                '}';
+        return Objects.hash(id);
     }
 }
