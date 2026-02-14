@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard'
 import Layout from './components/Layout'
 import UserProfile from './pages/UserProfile'
 import AuthSync from './components/AuthSync'
+import Workouts from './pages/Workouts'
 
 function App() {
     return (
@@ -24,7 +25,7 @@ function App() {
                     </>
                 }>
                     <Route index element={<Dashboard />} />
-                    <Route path="workouts" element={<Dashboard />} />
+                    <Route path="workouts" element={<Workouts />} />
                     <Route path="profile" element={<UserProfile />} />
                 </Route>
             </Routes>

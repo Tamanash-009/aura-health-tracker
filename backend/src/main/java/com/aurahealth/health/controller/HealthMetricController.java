@@ -38,9 +38,25 @@ public class HealthMetricController {
         ensureUserExists(jwt);
 
         metric.setUserId(userId);
-        metric.setMeasuredAt(LocalDateTime.now());
+        if (metric.getMeasuredAt() == null) {
+            metric.setMeasuredAt(LocalDateTime.now());
+        }
 
         return ResponseEntity.ok(healthMetricRepository.save(metric));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteMetric(@AuthenticationPrincipal Jwt jwt, @PathVariable Long id) {
+        String userId = jwt.getSubject();
+        HealthMetric metric = healthMetricRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Metric not found"));
+
+        if (!metric.getUserId().equals(userId)) {
+            return ResponseEntity.status(403).body("Not authorized to delete this metric");
+        }
+
+        healthMetricRepository.delete(metric);
+        return ResponseEntity.ok().build();
     }
 
     // Sync Clerk User to local DB if not exists

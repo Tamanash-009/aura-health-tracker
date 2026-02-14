@@ -9,6 +9,8 @@ const AddMetricForm: React.FC<AddMetricFormProps> = ({ onMetricAdded }) => {
     const [type, setType] = useState('HEART_RATE');
     const [value, setValue] = useState('');
     const [unit, setUnit] = useState('BPM');
+    // Default to current local date-time formatted for input[type="datetime-local"]
+    const [measuredAt, setMeasuredAt] = useState(new Date().toISOString().slice(0, 16));
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -19,7 +21,7 @@ const AddMetricForm: React.FC<AddMetricFormProps> = ({ onMetricAdded }) => {
                 type,
                 value: parseFloat(value),
                 unit,
-                measuredAt: new Date().toISOString()
+                measuredAt: new Date(measuredAt).toISOString()
             });
             setValue('');
             onMetricAdded();
@@ -70,6 +72,17 @@ const AddMetricForm: React.FC<AddMetricFormProps> = ({ onMetricAdded }) => {
                         placeholder="e.g. 72"
                         required
                         step="0.01"
+                        className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                    />
+                </div>
+
+                <div className="flex-1 min-w-[200px]">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Date & Time</label>
+                    <input
+                        type="datetime-local"
+                        value={measuredAt}
+                        onChange={(e) => setMeasuredAt(e.target.value)}
+                        required
                         className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                     />
                 </div>

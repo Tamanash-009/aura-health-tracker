@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import api from '../utils/api';
 import AddMetricForm from '../components/AddMetricForm';
 import LoadingSpinner from '../components/LoadingSpinner';
+import MetricChart from '../components/MetricChart';
 
 interface HealthMetric {
     id: number;
@@ -43,6 +44,7 @@ const Dashboard = () => {
     const heartRate = getLatestMetric('HEART_RATE');
     const steps = getLatestMetric('STEPS');
     const sleep = getLatestMetric('SLEEP');
+    const weight = getLatestMetric('WEIGHT');
 
     if (loading) {
         return (
@@ -58,7 +60,7 @@ const Dashboard = () => {
     return (
         <div className="space-y-6">
             {/* Quick Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 transition-all hover:shadow-md">
                     <div className="flex justify-between items-start">
                         <div>
@@ -109,6 +111,39 @@ const Dashboard = () => {
                         <div className="h-full bg-purple-500 rounded-full transition-all duration-500" style={{ width: `${Math.min(((sleep?.value || 0) / 10) * 100, 100)}%` }}></div>
                     </div>
                 </div>
+
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 transition-all hover:shadow-md">
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <h3 className="text-gray-500 text-sm font-medium">Weight</h3>
+                            <p className="text-3xl font-bold text-gray-900 mt-2">
+                                {weight ? `${weight.value}` : '--'} <span className="text-base font-normal text-gray-500">kg</span>
+                            </p>
+                        </div>
+                        <div className="p-2 bg-green-50 rounded-lg">
+                            <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path></svg>
+                        </div>
+                    </div>
+                    <div className="mt-4 text-sm text-gray-400">
+                        Latest measurement
+                    </div>
+                </div>
+            </div>
+
+            {/* Charts Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <MetricChart
+                    title="Heart Rate"
+                    color="#ef4444"
+                    unit="BPM"
+                    data={metrics.filter(m => m.type === 'HEART_RATE').map(m => ({ date: m.measuredAt, value: m.value }))}
+                />
+                <MetricChart
+                    title="Weight"
+                    color="#10b981"
+                    unit="kg"
+                    data={metrics.filter(m => m.type === 'WEIGHT').map(m => ({ date: m.measuredAt, value: m.value }))}
+                />
             </div>
 
             {/* Add Metric Section */}
@@ -132,12 +167,13 @@ const Dashboard = () => {
                         <tbody className="divide-y divide-gray-100">
                             {metrics.length > 0 ? (
                                 metrics.map((metric) => (
-                                    <tr key={metric.id} className="hover:bg-gray-50/50 transition-colors">
+                                    <tr key={metric.id} className="hover:bg-gray-50/50 transition-colors group">
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                                                 ${metric.type === 'HEART_RATE' ? 'bg-red-100 text-red-800' :
                                                     metric.type === 'STEPS' ? 'bg-blue-100 text-blue-800' :
-                                                        metric.type === 'SLEEP' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'}`}>
+                                                        metric.type === 'SLEEP' ? 'bg-purple-100 text-purple-800' :
+                                                            metric.type === 'WEIGHT' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
                                                 {metric.type.replace('_', ' ')}
                                             </span>
                                         </td>
@@ -148,10 +184,29 @@ const Dashboard = () => {
                                             {new Date(metric.measuredAt).toLocaleString()}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className="flex items-center text-sm text-green-600">
-                                                <span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-                                                Synced
-                                            </span>
+                                            <div className="flex items-center justify-between">
+                                                <span className="flex items-center text-sm text-green-600">
+                                                    <span className="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+                                                    Synced
+                                                </span>
+                                                <button
+                                                    onClick={async () => {
+                                                        if (window.confirm('Delete this log?')) {
+                                                            try {
+                                                                await api.delete(`/health/${metric.id}`);
+                                                                await fetchMetrics();
+                                                            } catch (e) {
+                                                                console.error('Failed to delete', e);
+                                                                alert('Failed to delete log');
+                                                            }
+                                                        }
+                                                    }}
+                                                    className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-opacity p-2"
+                                                    title="Delete Log"
+                                                >
+                                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))

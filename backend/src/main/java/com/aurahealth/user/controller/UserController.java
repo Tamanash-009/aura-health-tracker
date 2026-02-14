@@ -27,4 +27,19 @@ public class UserController {
 
         return ResponseEntity.ok(user);
     }
+
+    @org.springframework.web.bind.annotation.PutMapping("/me")
+    public ResponseEntity<?> updateProfile(@AuthenticationPrincipal Jwt jwt,
+            @org.springframework.web.bind.annotation.RequestBody java.util.Map<String, String> updates) {
+        String userId = jwt.getSubject();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Error: User not found."));
+
+        if (updates.containsKey("username")) {
+            user.setUsername(updates.get("username"));
+        }
+
+        userRepository.save(user);
+        return ResponseEntity.ok(user);
+    }
 }
