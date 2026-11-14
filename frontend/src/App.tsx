@@ -6,6 +6,8 @@ import UserProfile from './pages/UserProfile'
 import AuthSync from './components/AuthSync'
 import Workouts from './pages/Workouts'
 
+const isDemoMode = !import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+
 function App() {
     return (
         <Router>
@@ -15,14 +17,18 @@ function App() {
                 <Route path="/signup/*" element={<div className="flex justify-center items-center min-h-screen bg-gray-50"><SignUp routing="path" path="/signup" /></div>} />
 
                 <Route path="/" element={
-                    <>
-                        <SignedIn>
-                            <Layout />
-                        </SignedIn>
-                        <SignedOut>
-                            <RedirectToSignIn />
-                        </SignedOut>
-                    </>
+                    isDemoMode ? (
+                        <Layout />
+                    ) : (
+                        <>
+                            <SignedIn>
+                                <Layout />
+                            </SignedIn>
+                            <SignedOut>
+                                <RedirectToSignIn />
+                            </SignedOut>
+                        </>
+                    )
                 }>
                     <Route index element={<Dashboard />} />
                     <Route path="workouts" element={<Workouts />} />
